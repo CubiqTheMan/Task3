@@ -1,0 +1,36 @@
+Сначала начал делать запросы с предпоследнего слайда, но подумал, что на дз имелись в виду последние запросы. Поэтому сначала первый запрос из предпоследнего слайда, а потом 3 с последнего
+Запросы:
+
+SELECT DISTINCT C.CustomerId, C.FirstName, C.Phone, C.Company, E.BirthDate
+FROM Customer C
+INNER JOIN Employee E ON C.SupportRepId = E.EmployeeId
+INNER JOIN Invoice I ON C.CustomerId = I.CustomerId
+INNER JOIN InvoiceLine IL ON I.InvoiceId = IL.InvoiceId
+INNER JOIN (SELECT TrackId
+            FROM  Track
+            ORDER BY UnitPrice DESC
+            ) AS T ON T.TrackId = IL.TrackId
+
+
+SELECT DISTINCT FirstName || ' ' || LastName, Phone, City
+FROM Customer C
+INNER JOIN Invoice I ON C.CustomerId = I.CustomerId
+WHERE I.InvoiceId NOT NULL AND EXISTS (
+SELECT DISTINCT FirstName || ' ' || LastName, Phone, City
+FROM Customer Cus
+INNER JOIN Invoice Inv ON Cus.CustomerId = Inv.CustomerId
+WHERE Inv.InvoiceId NOT NULL AND Cus.CustomerId <> C.CustomerId AND Cus.City = C.City)
+
+
+SELECT BillingCity, SUM(total)
+FROM Invoice
+GROUP BY BillingCity
+ORDER BY SUM(Total) DESC
+LIMIT 3;
+
+
+SELECT InvoiceLine.TrackId, sum(InvoiceLine.UnitPrice)
+FROM InvoiceLine
+INNER JOIN Track ON InvoiceLine.TrackId = Track.GenreId
+GROUP BY InvoiceLine.TrackId
+ORDER BY sum(UnitPrice) DESC
