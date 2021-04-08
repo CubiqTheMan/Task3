@@ -29,8 +29,10 @@ ORDER BY SUM(Total) DESC
 LIMIT 3;
 
 
-SELECT InvoiceLine.TrackId, sum(InvoiceLine.UnitPrice)
-FROM InvoiceLine
-INNER JOIN Track ON InvoiceLine.TrackId = Track.GenreId
-GROUP BY InvoiceLine.TrackId
-ORDER BY sum(UnitPrice) DESC
+SELECT G.Name, sum(IL.UnitPrice)
+FROM InvoiceLine IL
+INNER JOIN Track T ON IL.TrackId = T.TrackId
+LEFT JOIN Genre G ON T.GenreId = G.GenreId
+GROUP BY T.GenreId
+ORDER BY sum(IL.UnitPrice) DESC
+LIMIT 1;
